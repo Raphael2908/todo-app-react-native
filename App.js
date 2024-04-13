@@ -18,10 +18,14 @@ class TodoItem {
 
 export default function App() {
   const [todoItems, setTodoItems] = useState([])
-  const image =require('./assets/todo.png');
+  const image = require('./assets/todo.png');
+  const [checked, setChecked] = useState(false) 
 
   function addTodos() {
     setTodoItems(current => [...current, new TodoItem('')])
+  }
+  function handlePress(){
+    setChecked(state => !state)
   }
 
   function handleTodoItemUpdate(text, index) {
@@ -56,19 +60,18 @@ export default function App() {
       
       {/* Sheet */}
       <View style={styles.sheet}>
-        <CheckBox />
+       
         {todoItems.map((item, index) => (
-              <View style={{
+              <View key={index} style={{
                 flexDirection: 'row',
                 alignItems: 'center'
               }}>
-                <Pressable key={index}>
-                  <Text>wadawd</Text>
+                <Pressable onPress={handlePress}>
+                  <CheckBox height={30} width={30} checked={checked} />
                 </Pressable>
                 <TextInput 
                 style={styles.text} 
-                placeholder={item.placeholder} 
-                key={index} 
+                placeholder={item.placeholder}  
                 value={item.name} 
                 clearButtonMode='unless-editing'
                 onChangeText={(text) => handleTodoItemUpdate(text, index)}
