@@ -2,45 +2,16 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Pressable, TextInput, ImageBackground } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
-import CheckBox  from './components/Checkbox.js'
+import TodoItem  from './components/TodoItem.js'
 // Make a todo input component
 
-class TodoItem {
-  name; // String
-  placeholder; // String
-  isCompleted; // Boolean 
-  constructor(name){
-    this.name = name
-    this.placeholder = 'Task'
-    this.isCompleted = false
-  }
-}
-
 export default function App() {
-  const [todoItems, setTodoItems] = useState([])
+  const [todoItemsArray, setTodoItems] = useState([])
   const image = require('./assets/todo.png');
-  const [checked, setChecked] = useState(false) 
-
-  function addTodos() {
-    setTodoItems(current => [...current, new TodoItem('')])
-  }
-  function handlePress(){
-    setChecked(state => !state)
-  }
-
-  function handleTodoItemUpdate(text, index) {
-    const newTodoItem = todoItems.map((t, i) => {
-      if(i == index){
-        return {
-          ...t,
-          name: text
-        }
-      }
-      else {
-        return t
-      }
+  function addTodos(){
+    setTodoItems((array) => {
+      return [...array, "hello"]
     })
-    setTodoItems(newTodoItem)
   }
   return (
     <View style={{
@@ -60,22 +31,13 @@ export default function App() {
       
       {/* Sheet */}
       <View style={styles.sheet}>
-       
-        {todoItems.map((item, index) => (
+        {todoItemsArray.map((item, index) => (
               <View key={index} style={{
                 flexDirection: 'row',
-                alignItems: 'center'
+                alignItems: 'center',
+                gap: 10
               }}>
-                <Pressable onPress={handlePress}>
-                  <CheckBox height={30} width={30} checked={checked} />
-                </Pressable>
-                <TextInput 
-                style={styles.text} 
-                placeholder={item.placeholder}  
-                value={item.name} 
-                clearButtonMode='unless-editing'
-                onChangeText={(text) => handleTodoItemUpdate(text, index)}
-              />
+                <TodoItem/>
               </View>
             ))}
           <Pressable style={styles.floatingButton} onPress={addTodos}>
@@ -97,7 +59,8 @@ const styles = StyleSheet.create({
   },
   text:{
     color: 'white',
-    fontSize: 24
+    fontSize: 24,
+    flexGrow: 1
   },  
   floatingButton:{
     position: 'absolute',
@@ -125,6 +88,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: '25',
     borderTopRightRadius: '25',
     padding: '10%',
+    gap: 10
   },
   heading: {
     fontSize: 30,
