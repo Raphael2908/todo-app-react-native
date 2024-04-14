@@ -1,20 +1,32 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Pressable, TextInput, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, Pressable, FlatList, } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
 import TodoItem  from './components/TodoItem.js'
-// Make a todo input component
+import * as Haptics from 'expo-haptics';
+import { GestureHandlerRootView, GestureDetector, Gesture, Swipeable, Directions } from 'react-native-gesture-handler';
+import AppleStyleSwipeableRow from './components/AppleStyleSwipeableRow.js'
+import uuid from 'react-native-uuid';
+
 
 export default function App() {
   const [todoItemsArray, setTodoItems] = useState([])
   const image = require('./assets/todo.png');
+
   function addTodos(){
     setTodoItems((array) => {
-      return [...array, "hello"]
+      return [...array, {key: uuid.v4(), component: <TodoItem/>}]
     })
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy)
   }
+  function removeTodo(key) {
+    setTodoItems(prevState => {
+      return prevState.filter((item) => item.key != key)
+    });
+  }
+  
   return (
-    <View style={{
+    <GestureHandlerRootView style={{
       flex:1,
     }}>
       
@@ -25,28 +37,26 @@ export default function App() {
         alignItems:'center'
       }}>
           <Text style={styles.heading}>Todo app</Text>
-        {/* <ImageBackground source={image} resizeMode="cover" style={{flex:1, justifyContent:"center", alignItems:'center'}}>
-        </ImageBackground> */}
       </View>
       
       {/* Sheet */}
       <View style={styles.sheet}>
-        {todoItemsArray.map((item, index) => (
-              <View key={index} style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 10
-              }}>
-                <TodoItem/>
-              </View>
-            ))}
+        <FlatList
+            data={todoItemsArray}
+            renderItem={
+              ({item}) => 
+              <Swipeable key={item.key} renderRightActions={AppleStyleSwipeableRow} rightThreshold={150} onSwipeableWillOpen={(direction) => removeTodo(item.key)}>
+                {item.component}
+              </Swipeable>
+            }
+          />
           <Pressable style={styles.floatingButton} onPress={addTodos}>
             <Ionicons name="add-outline" size={32} color="white" />
         </Pressable>
       </View>
 
       <StatusBar style="auto" />
-    </View>
+    </GestureHandlerRootView>
   );
 }
 
@@ -87,8 +97,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#272727',
     borderTopLeftRadius: '25',
     borderTopRightRadius: '25',
-    padding: '10%',
-    gap: 10
+    paddingTop: 27
   },
   heading: {
     fontSize: 30,

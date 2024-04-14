@@ -1,6 +1,6 @@
 import { useState} from "react";
 import { StyleSheet, View, TextInput, Pressable } from "react-native";
-import Animated, { useSharedValue, Easing, withTiming } from 'react-native-reanimated';
+import Animated, { useSharedValue} from 'react-native-reanimated';
 import * as Haptics from 'expo-haptics';
 import CheckBox  from './Checkbox.js'
 
@@ -24,7 +24,10 @@ export default function TodoItem(){
        <View style={{
         flex: 1,
         flexDirection: "row",
-        gap: 10
+        gap: 10,
+        padding: 5,
+        backgroundColor: "#272727",
+        paddingLeft: 10,
        }}>
             <Pressable onPress={handlePress}>
                 <CheckBox height={30} width={30} checked={isCompleted}/>
